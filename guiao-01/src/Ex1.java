@@ -12,7 +12,7 @@ class N_Runnable implements Runnable {
 }
 
 
-public class Main {
+public class Ex1 {
     public static void main(String[] args) throws Exception {
         int N = 3;
         int I = 100;
