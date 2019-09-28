@@ -18,6 +18,11 @@ class Banco{
     public synchronized void levantar(int conta, double valor){
         this.contas[conta]-=valor;
     }
+
+    public synchronized void transferir(int origem, int destino, double valor){
+            this.levantar(origem,valor);
+            this.depositar(destino,valor);
+    }
 }
 
 class Cliente1 implements Runnable{
