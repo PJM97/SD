@@ -5,7 +5,7 @@ class Conta{
         this.valor=0;
     }
 
-    public double consultar(){
+    public synchronized double consultar(){
         return this.valor;
     }
 
@@ -60,7 +60,10 @@ class Cliente_1 implements Runnable{
     }
 
     public void run() {
+        System.out.println(Thread.currentThread().getName() +" C0:"+ banco.consultar(0)+" C1:"+ banco.consultar(1));
         this.banco.transferir(0,1,1000);
+        System.out.println(Thread.currentThread().getName() +" C0:"+ banco.consultar(0)+" C1:"+ banco.consultar(1));
+
     }
 }
 
@@ -72,7 +75,9 @@ class Cliente_2 implements Runnable{
     }
 
     public void run() {
+        System.out.println(Thread.currentThread().getName() +" C0:"+ banco.consultar(0)+" C1:"+ banco.consultar(1));
         this.banco.transferir(1,0,1000);
+        System.out.println(Thread.currentThread().getName() +" C0:"+ banco.consultar(0)+" C1:"+ banco.consultar(1));
     }
 }
 
@@ -83,7 +88,9 @@ public class Ex4 {
         Novo_Banco banco = new Novo_Banco(n_contas);
         Thread T[] = new Thread[2];
         T[0] = new Thread(new Cliente_1(banco));
+        T[0].setName("Thread0");
         T[1] = new Thread(new Cliente_2(banco));
+        T[1].setName("Thread1");
 
         T[0].start();
         T[1].start();
