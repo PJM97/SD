@@ -65,14 +65,14 @@ class Banco{
         int min = Math.min(origem,destino);
         int max = Math.max(origem,destino);
 
-        this.contas[min].lock();
-        this.contas[max].lock();
+        this.contas.get(min).lock();
+        this.contas.get(max).lock();
 
         this.levantar(origem,valor);
         this.depositar(destino,valor);
 
-        this.contas[max].unlock();
-        this.contas[min].unlock();
+        this.contas.get(max).unlock();
+        this.contas.get(min).unlock();
 
     }
 }
