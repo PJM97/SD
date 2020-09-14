@@ -1,6 +1,12 @@
 import java.util.HashMap;
 import java.util.concurrent.locks.ReentrantLock;
 
+class ContaInvalida extends Exception {
+    public ContaInvalida(String message) {
+        super(message);
+    }
+}
+
 class Conta{
     private int id;
     private double valor;
@@ -38,30 +44,28 @@ class Banco{
 
     Banco(int n){
         this.contas = new HashMap<>();
-        for(int i=0;i<n;i++)
-            this.contas[i] = new Conta();
         this.lock_Banco = new ReentrantLock();
     }
 
     public double consultar(int conta){
-        return this.contas[conta].consultar();
+        return this.contas.get(conta).consultar();
     }
 
     public void depositar(int id, double valor) throws ContaInvalida{
         if(!contas.containsKey(id)) {
-            throw new ContaInvalida(id);
+            throw new ContaInvalida(String.valueOf(id));
         }
 
         this.contas.get(id).lock();
 
-        this.contas.get(id)
+        this.contas.get(id).unlock();
     }
 
     public void levantar(int conta, double valor){
-        this.contas[conta].levantar(valor);
+        this.contas.get(conta).levantar(valor);
     }
 
-    public void transferir(int origem, int destino, double valor){
+    public void transferir(int origem, int destino, double valor) throws Exception{
         int min = Math.min(origem,destino);
         int max = Math.max(origem,destino);
 
@@ -87,9 +91,13 @@ class Cliente_1 implements Runnable{
     }
 
     public void run() {
-        System.out.println(Thread.currentThread().getName() +" C0:"+ banco.consultar(0)+" C1:"+ banco.consultar(1));
-        this.banco.transferir(0,1,1000);
-        System.out.println(Thread.currentThread().getName() +" C0:"+ banco.consultar(0)+" C1:"+ banco.consultar(1));
+        try {
+            System.out.println(Thread.currentThread().getName() +" C0:"+ banco.consultar(0)+" C1:"+ banco.consultar(1));
+            this.banco.transferir(0,1,1000);
+            System.out.println(Thread.currentThread().getName() +" C0:"+ banco.consultar(0)+" C1:"+ banco.consultar(1));
+        } catch (Exception e){
+
+        }
 
     }
 }
@@ -102,9 +110,13 @@ class Cliente_2 implements Runnable{
     }
 
     public void run() {
-        System.out.println(Thread.currentThread().getName() +" C0:"+ banco.consultar(0)+" C1:"+ banco.consultar(1));
-        this.banco.transferir(1,0,1000);
-        System.out.println(Thread.currentThread().getName() +" C0:"+ banco.consultar(0)+" C1:"+ banco.consultar(1));
+        try {
+            System.out.println(Thread.currentThread().getName() +" C0:"+ banco.consultar(0)+" C1:"+ banco.consultar(1));
+            this.banco.transferir(1,0,1000);
+            System.out.println(Thread.currentThread().getName() +" C0:"+ banco.consultar(0)+" C1:"+ banco.consultar(1));
+        } catch (Exception e){
+
+        }
     }
 }
 
